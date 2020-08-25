@@ -1,0 +1,133 @@
+
+#include <stdio.h>
+
+int max4(int a, int b, int c, int d) {
+    int max = a;
+    if (b > max)
+        max = b;
+    if (c > max)
+        max = c;
+    if (d > max)
+        max = d;
+    return max;
+}
+
+int min3(int a, int b, int c) {
+    int min = a;
+    if (b < min)
+        min = b;
+    if (c < min)
+        min = c;
+    return min;
+}
+
+int min4(int a, int b, int c, int d) {
+    int min = a;
+    if (b < min)
+        min = b;
+    if (c < min)
+        min = c;
+    if (d < min)
+        min = d;
+    return min;
+}
+
+int mid3(int a, int b, int c) {
+    if (a >= b) {
+        if (b >= c)     // a >= b >= c
+            return b;
+        else if (c >= a) // c >= a >= b
+            return a;
+        else            // a > c > b
+            return c;
+    } else {
+        if (c >= b)     // c >= b > a
+            return b;
+        else if (a >= c) // b > a >= c
+            return a;
+        else            // b > c > a
+            return c;
+    }
+}
+
+int sum(int n) {
+    int sum = 0;
+    for (int i=1; i<n; i++) {
+        printf("%d + ", i);
+        sum += i;
+    }
+    sum += n;
+    printf("%d = %d\n", n, sum);
+    return sum;
+}
+
+int gause(int n) {
+    int sum = (1 + n) * n / 2;
+    return sum;
+}
+
+int between(int a, int b) {
+    int sum = 0;
+    int big = a >= b ? a : b;
+    int small = a >= b ? b : a;
+    for (int i = small; i <= big; i++)
+        sum += i;
+    return sum;
+}
+
+void minus(void) {
+    int a, b;
+    printf("Enter a: ");
+    scanf("%d", &a);
+    printf("Enter b: ");
+    scanf("%d", &b);
+    while (b <= a) {
+        printf("b should be bigger than a\nEnter b: ");
+        scanf("%d", &b);
+    }
+    printf("b minus a is %d.\n", b - a);
+}
+
+void digit_count(void) {
+    int num;
+    int tens = 10;
+    int count = 1;
+    printf("Enter a positive number: ");
+    scanf("%d", &num);
+    if (num > tens) {
+        while (num % tens != num) {
+            tens *= 10;
+            count++;
+        }
+    }
+    printf("That is a %d-digit number.\n", count);
+}
+
+int main(void) {
+
+    printf("Testing max4 with 1, 4, 3, 6\n"
+           "Result: %d\n", max4(1,4,3,6));
+
+    printf("Testing min3 with 7, 3, 9\n"
+           "Result: %d\n", min3(7,3,9));
+
+    printf("Testing min4 with 1, 4, 3, 6\n"
+           "Result: %d\n", min4(1,4,3,6));
+
+    printf("Testing mid3 with 1, 4, 3\n"
+           "Result: %d\n", mid3(1,4,3));
+
+    sum(7);
+
+    printf("Testing gause with 10\n"
+           "Result: %d\n", gause(10));
+
+    printf("Testing between with 8 and 10\n"
+           "Result: %d\n", between(10,8));
+
+    minus();
+
+    digit_count();
+
+    return 0;
+}
