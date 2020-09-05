@@ -1,0 +1,279 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define VMAX 21
+
+typedef struct {
+    char name[20];
+    int height;
+    double vision;
+} PhysCheck;
+
+typedef struct {
+    int yy;
+    int mm;
+    int dd;
+} Date;
+
+void int_swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int height_min(const int arr[], int n) {
+    int min = arr[0];
+    for (int i=1; i<n; i++) {
+        if (arr[i] < min)
+            min = arr[i];
+    }
+    return min;
+}
+
+int height_sum(const int arr[], int n) {
+    int sum = arr[0];
+    for (int i=1; i<n; i++)
+        sum += arr[i];
+    return sum;
+}
+
+double height_average(const int arr[], int n) {
+    int sum = arr[0];
+    for (int i=1; i<n; i++)
+        sum += arr[i];
+    return (double) sum / (double) n;
+}
+
+void reverse_arr(int arr[], int n) {
+    int i, j;
+    for (i=0; i<n/2; i++) {
+        for (j=0; j<n; j++)
+            printf("%d ", arr[j]);
+        printf("\nSwapping arr[%d] with arr[%d]...\n", i, n-1-i);
+        int_swap(arr+i, arr+n-1-i);
+    }
+    for (j=0; j<n; j++)
+        printf("%d ", arr[j]);
+    printf("\nCompleted sorting array in reverse.\n");
+}
+
+void int_convert(unsigned target, int sys) {
+    int pow = sys;
+    char number[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    while (pow < target)
+        pow *= sys;
+    if (pow > target)
+        pow /= sys;
+    while (pow >= sys) {
+        printf("%c", number[target / pow]);
+        target -= pow * (target / pow);
+        pow /= sys;
+    }
+    if (pow < sys)
+        printf("%c", number[target]);
+    printf("\n");
+}
+
+void arr_copy(int a[], const int b[], int n) {
+    for (int i=0; i<n; i++)
+        a[i] = b[i];
+}
+
+void rev_copy(int a[], const int b[], int n) {
+    for (int i=n; i>0; i--)
+        a[n-i] = b[i-1];
+}
+
+void shuffle(int a[], int n) {
+    for (int i=0; i<n; i++) {
+        int random = rand() % n;
+        int_swap(a+i, a+random);
+    }
+}
+
+int months[2][12] = {
+        {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
+        {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+};
+
+int isLeap(int year) {
+    if (year % 4 == 0) {
+        if (year % 100 == 0) {
+            if (year % 400 == 0)
+                return 1;
+            else
+                return 0;
+        } else
+            return 1;
+    } else
+        return 0;
+}
+
+int days_passed(Date date) {
+    while (--(date.mm)) // while it's not 0
+        date.dd += months[isLeap(date.yy)][(date.mm)-1];
+    return date.dd;
+}
+
+void dist_vision(const PhysCheck data[], int n, int dist[]) {
+    int i;
+    for (i=0; i<VMAX; i++)
+        dist[i] = 0;
+    for (i=0; i<n; i++)
+        if (data[i].vision >= 0.0 && data[i].vision <= VMAX/10.0)
+            dist[(int)(data[i].vision*10)]++;
+}
+
+Date days_after(Date today, int n) {
+    Date then = today;
+    int this_year = isLeap(today.yy) == 1 ? 366 : 365;
+    this_year -= days_passed(today);
+    int this_month = months[isLeap(today.yy)][today.mm-1] - today.dd;
+    if (n > this_year) {
+        n -= this_year;
+        then.yy++;
+        then.mm = 1;
+        then.dd = 1;
+        while (n > 365)
+            n -= isLeap(then.yy++) == 1 ? 366 : 365;
+        while (n > 30)
+            n -= months[isLeap(then.yy)][(then.mm++)-1];
+    } else if (n > this_month) {
+        n -= this_month;
+        then.mm++;
+        then.dd = 1;
+        while (n > 30)
+            n -= months[isLeap(then.yy)][(then.mm++)-1];
+    }
+    then.dd += n;
+    return then;
+}
+
+Date days_before(Date today, int n) {
+    Date then = today;
+    int this_year = days_passed(today);
+    int this_month = today.dd;
+    if (n > this_year) {
+        n -= this_year;
+        then.yy--;
+        then.mm = 12;
+        then.dd = 31;
+        while (n > 365)
+            n -= isLeap(then.yy--) == 1 ? 366 : 365;
+        while (n > 30)
+            n -= months[isLeap(then.yy)][(then.mm--)-1];
+    } else if (n > this_month) {
+        n -= this_month;
+        then.mm--;
+        then.dd = months[isLeap(then.yy)][then.mm-1];
+        while (n > 30)
+            n -= months[isLeap(then.yy)][(then.mm--)-1];
+    }
+    then.dd -= n;
+    return then;
+}
+
+int main(void) {
+
+    int i;
+    int *height;
+    int number;
+    printf("Number of people: ");
+    scanf("%d", &number);
+    height = calloc(number, sizeof(int));
+    printf("Enter the heights of %d persons:\n", number);
+    for (i=0; i<number; i++) {
+        printf("height[%d]: ", i);
+        scanf("%d", &height[i]);
+    }
+    printf("The minimum value is %d.\n", height_min(height, number));
+    printf("The sum of heights is %d.\n", height_sum(height, number));
+    printf("The average of heights is %.2lf.\n", height_average(height, number));
+    free(height);
+
+    srand(time(NULL));
+    number = 5 + rand() % 16;
+    printf("Generated the number of people: %d\n", number);
+    height = calloc(number, sizeof(int));
+    for (i=0; i<number; i++) {
+        height[i] = 100 + rand() % 90;
+        printf("height[%d]: %d\n", i, height[i]);
+    }
+    printf("The minimum value is %d.\n", height_min(height, number));
+    reverse_arr(height, number);
+    free(height);
+
+    int sys, retry;
+    unsigned target;
+    puts("Let me convert a decimal number.\n");
+    do {
+        printf("Enter an unsigned target integer: ");
+        scanf("%d", &target);
+        do {
+            printf("To which system do you want to convert? (2~36): ");
+            scanf("%d", &sys);
+        } while (sys < 2 || sys > 36);
+        int_convert(target, sys);
+        printf("Wanna run again? (1-yes 0-no): ");
+        scanf("%d", &retry);
+    } while (retry == 1);
+
+    int arr[10] = {1,2,3,4,5,6,7,8,9,0};
+    printf("Original array: ");
+    for (i=0; i<10; i++)
+        printf("%d ", arr[i]);
+
+    int empty[10];
+    arr_copy(empty, arr, 10);
+    printf("\nCopied array: ");
+    for (i=0; i<10; i++)
+        printf("%d ", empty[i]);
+
+    rev_copy(empty, arr, 10);
+    printf("\nReversed array: ");
+    for (i=0; i<10; i++)
+        printf("%d ", empty[i]);
+
+    shuffle(empty, 10);
+    printf("\nShuffled array: ");
+    for (i=0; i<10; i++)
+        printf("%d ", empty[i]);
+
+    Date today;
+    printf("\nWhat date is it today?(format: yyyy(tab)mm(tab)dd): ");
+    scanf("%d\t%d\t%d", &today.yy, &today.mm, &today.dd);
+    printf("%d days passed this year.\n", days_passed(today));
+
+    PhysCheck data[] = {
+            {"amanda", 162, 0.3},
+            {"brad", 173, 0.7},
+            {"chris", 175, 2.0},
+            {"dean", 171, 1.5},
+            {"eva", 168, 0.4},
+            {"frank", 174, 1.2},
+            {"greg", 169, 0.8}
+    };
+    int n = sizeof(data) / sizeof(data[0]); // number of persons in data
+    int dist[VMAX];
+    puts("========RESULTS========\n");
+    puts("name	height	vision\n");
+    for (i=0; i<n; i++)
+        printf("%s 	%d 	%f\n", data[i].name, data[i].height, data[i].vision);
+    dist_vision(data, n, dist);
+    printf("\nDistribution of vision: \n");
+    for (i=0; i<VMAX; i++) {
+        printf("%3.1f ~ : ", i / 10.0);
+        for (int j = 0; j < dist[i]; j++)
+            printf("*");
+        putchar('\n');
+    }
+
+    printf("Enter n: ");
+    scanf("%d", &n);
+    Date after = days_after(today, n);
+    Date before = days_before(today, n);
+    printf("%d days after today: %d-%d-%d\n", n, after.yy, after.mm, after.dd);
+    printf("%d days before today: %d-%d-%d\n", n, before.yy, before.mm, before.dd);
+
+    return 0;
+}
