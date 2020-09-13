@@ -105,24 +105,24 @@ void digit_count(void) {
 
 int main(void) {
 
-    printf("Testing max4 with 1, 4, 3, 6\n"
+    printf("Testing max4() with 1, 4, 3, 6\n"
            "Result: %d\n", max4(1,4,3,6));
 
-    printf("Testing min3 with 7, 3, 9\n"
+    printf("Testing min3() with 7, 3, 9\n"
            "Result: %d\n", min3(7,3,9));
 
-    printf("Testing min4 with 1, 4, 3, 6\n"
+    printf("Testing min4() with 1, 4, 3, 6\n"
            "Result: %d\n", min4(1,4,3,6));
 
-    printf("Testing mid3 with 1, 4, 3\n"
+    printf("Testing mid3() with 1, 4, 3\n"
            "Result: %d\n", mid3(1,4,3));
 
     sum(7);
 
-    printf("Testing gause with 10\n"
+    printf("Testing gause() with 10\n"
            "Result: %d\n", gause(10));
 
-    printf("Testing between with 8 and 10\n"
+    printf("Testing between() with 8 and 10\n"
            "Result: %d\n", between(10,8));
 
     minus();
